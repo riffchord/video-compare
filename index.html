@@ -259,11 +259,6 @@
     }
 });
 
-video2.addEventListener('timeupdate', () => {
-    if (Math.abs(video2.currentTime - video1.currentTime) > 0.1) {
-        video1.currentTime = video2.currentTime;
-    }
-});
         playButton.addEventListener("click", function() {
             videos.forEach(video => video.play());
         });
