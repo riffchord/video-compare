@@ -174,7 +174,7 @@
             </video>
         </div>
         <div id="video-controls">
-            <button id="playButton">▶</button> <!-- Play icon -->
+            <button id="playButton" disabled>▶</button> <!-- Play icon -->
             <button id="pauseButton">❚❚</button> <!-- Pause icon -->
             <button id="stopButton">■</button> <!-- Stop icon -->
             <input type="range" id="globalSeekbar" min="0" max="100" value="0" step="1">
@@ -315,27 +315,26 @@
        document.addEventListener('DOMContentLoaded', function() {
     var video1 = document.getElementById('video1');
     var video2 = document.getElementById('video2');
-    var playButton = document.getElementById('playButton');
     var loadingIndicator = document.getElementById('loadingIndicator');
     var videos = [video1, video2];
-    var videosReady = 0;
+    var loadingCheckInterval;
+    
+      var playButton = document.getElementById('playButton');
 
-    videos.forEach((video, index) => {
-        // Update loading progress
-        video.addEventListener('progress', () => {
-            var percent = getVideoLoadPercentage(video);
-            updateLoadingIndicator(index, percent);
-        });
+    function checkLoadingProgress() {
+        var loaded1 = getVideoLoadPercentage(video1);
+        var loaded2 = getVideoLoadPercentage(video2);
+        var percentLoaded = Math.min(loaded1, loaded2);
+        loadingIndicator.textContent = `Loading... ${percentLoaded}%`;
 
-        // Check if videos are ready to play
-        video.addEventListener('canplaythrough', () => {
-            videosReady++;
-            if (videosReady === videos.length) {
-                loadingIndicator.style.display = 'none';
-                playButton.disabled = false;
-            }
-        });
-    });
+        if (percentLoaded >= 100) {
+            clearInterval(loadingCheckInterval);
+            loadingIndicator.style.display = 'none';
+            // Enable play button or other controls here
+             playButton.disabled = false;
+            
+        }
+    }
 
     function getVideoLoadPercentage(video) {
         if (video.buffered.length === 0) return 0;
@@ -344,9 +343,8 @@
         return Math.round((bufferedEnd / duration) * 100);
     }
 
-    function updateLoadingIndicator(videoIndex, percent) {
-        loadingIndicator.textContent = `Loading Video ${videoIndex + 1}: ${percent}%`;
-    }
+    // Check the loading progress every half second
+    loadingCheckInterval = setInterval(checkLoadingProgress, 500);
 
             // Set initial position of the splitter
             videoClipper.style.width = "50%";
