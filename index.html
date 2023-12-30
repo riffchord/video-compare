@@ -252,13 +252,6 @@
         var stopButton = document.getElementById("stopButton");
         var videos = [video1, video2]; // Assuming video1 and video2 are your video elements
         
-        
-    video1.addEventListener('timeupdate', () => {
-    if (Math.abs(video1.currentTime - video2.currentTime) > 0.1) {
-        video2.currentTime = video1.currentTime;
-    }
-});
-
         playButton.addEventListener("click", function() {
             videos.forEach(video => video.play());
         });
